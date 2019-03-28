@@ -26,7 +26,7 @@ public class ChatActivity extends AppCompatActivity {
     EditText payloadInput;
     String myPayload;
     private boolean checkPublish;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
     ListView listView;
     MessageAdapter messageAdapter;
     private List<Message> messages;
@@ -43,13 +43,15 @@ public class ChatActivity extends AppCompatActivity {
         messageAdapter = new MessageAdapter(this, messages);
         listView.setAdapter(messageAdapter);
 
-        final String topic = "seamfix/test";
+        Intent intent = getIntent();
+        final String testTopic = intent.getStringExtra(MainActivity.chatTopic);
+        final String topic = testTopic;
         final int qos = 1;
         final String clientId = MqttClient.generateClientId();
         final MqttAndroidClient client = new MqttAndroidClient(this.getApplicationContext(), "tcp://broker.hivemq.com:1883", clientId);
 
-
         try {
+
             IMqttToken token = client.connect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
@@ -57,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
                     // Successful connection
 
                     subscribe(client, topic, qos);
+                    Log.d(TAG, topic);
 
                 }
 
@@ -87,8 +90,8 @@ public class ChatActivity extends AppCompatActivity {
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    checkPublish = false;
-                    Message subscriberMessage = new Message(myPayload, checkPublish);
+
+                    Message subscriberMessage = new Message(myPayload, false);
                     Log.d(TAG, "subscription successful!");
                 }
 
@@ -107,8 +110,7 @@ public class ChatActivity extends AppCompatActivity {
             String topic = "seamfix/test";
             byte[] encodedPayload = new byte[0];
             myPayload = payloadInput.getText().toString();
-            checkPublish = true;
-            Message publisherMessage = new Message(myPayload, checkPublish);
+            Message publisherMessage = new Message(myPayload, true);
             messageAdapter.addMessage(publisherMessage);
             if (myPayload.length() > 0) {
                 encodedPayload = myPayload.getBytes("UTF-8");
