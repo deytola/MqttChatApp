@@ -13,7 +13,8 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
 
     public static final String chatTopic = "com.deytola.assignment.topic";
-    private EditText userId;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    EditText userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
