@@ -1,4 +1,4 @@
-language; android
+language: android
 sudo : required
 
 android:
