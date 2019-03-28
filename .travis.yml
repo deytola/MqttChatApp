@@ -1,20 +1,21 @@
 language: android
-
 android:
   components:
-    - tools
-    - platform-tools
-before_cache:
-  -rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-  -rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    -$HOME/.gradle/caches/
-    -$HOME/.gradle/wrapper/
+    # - tools
+    # - platform-tools
 
-env:
-  global:
-    - ANDROID_API=28
-    - EMULATOR_API=28
-    - ANDROID_BUILD_TOOLS=28.0.22
-    - ADB_INSTALL_TIMEOUT=5 # minutes
+    # The BuildTools version used by the project
+    - build-tools-26.0.2
+
+    # The SDK version used to compile the project
+    - android-26
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+    
+    # if you need to run emulator(s) during your tests
+    - sys-img-x86-android-26
+    - sys-img-armeabi-v7a-android-17
