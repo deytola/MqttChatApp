@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,8 +28,13 @@ public class MainActivity extends AppCompatActivity {
     public void proceedToChat(View view) {
         Intent intent = new Intent(this, ChatActivity.class);
         String topicToPass = userId.getText().toString();
-        intent.putExtra(chatTopic, topicToPass);
-        startActivity(intent);
-        userId.getText().clear();
+        if (userId.getText().toString().equals("")){
+            Toast.makeText(MainActivity.this, "User Id cannot be empty. Please enter some text", Toast.LENGTH_SHORT).show();
+        }else{
+            intent.putExtra(chatTopic, topicToPass);
+            startActivity(intent);
+            userId.getText().clear();
+        }
+
     }
 }
