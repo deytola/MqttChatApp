@@ -2,4 +2,6 @@
     <string name="app_name">SeamFix Task</string>
     <string name="msg_hint"> Type a message</string>
     <string name="editText_userId">Enter user Id</string>
+    <string name="greeting">Welcome!</string>
+    <string name="guide">Enter a user id to get started</string>
 </resources>
