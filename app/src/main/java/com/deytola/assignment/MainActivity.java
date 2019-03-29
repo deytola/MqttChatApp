@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String chatTopic = "com.deytola.assignment.topic";
     private static final String TAG = MainActivity.class.getSimpleName();
     EditText userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,5 +29,6 @@ public class MainActivity extends AppCompatActivity {
         String topicToPass = userId.getText().toString();
         intent.putExtra(chatTopic, topicToPass);
         startActivity(intent);
+        userId.getText().clear();
     }
 }
