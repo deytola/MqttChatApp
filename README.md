@@ -13,7 +13,9 @@ MqttChatApp is an example of a chat app based on the MQTT protocol. Messages are
 
 **3. subscribe to broker**  
 * Users can also receive messages by subscribing to a topic.
-  
+
+**3. delete messages**
+* Users can delete sent message.
 
 ### This app connects to the hivemq online public broker  
 * The free hivemq broker is available at "broker.hivemq.com" and port "1883"
