@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -42,11 +43,11 @@ public class ChatActivity extends AppCompatActivity {
         messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, messages);
         listView.setAdapter(messageAdapter);
-
         Intent intent = getIntent();
-        final String testTopic = intent.getStringExtra(MainActivity.chatTopic);
-        final String topic = testTopic;
-        final int qos = 1;
+        final String newTopic = intent.getStringExtra(MainActivity.chatTopic); //create topic to subscribe to from userId entered on MainActivity
+
+
+        final int qos = 1;   // qos is chosen to be 1 so messages are delivered at least once
         final String clientId = MqttClient.generateClientId();
         final MqttAndroidClient client = new MqttAndroidClient(this.getApplicationContext(), "tcp://broker.hivemq.com:1883", clientId);
 
@@ -56,10 +57,10 @@ public class ChatActivity extends AppCompatActivity {
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // Successful connection
 
-                    subscribe(client, topic, qos);
-                    Log.d(TAG, topic);
+                    // After successful connection, subscribe to specified topic on broker
+
+                    subscribe(client, newTopic, qos);
 
                 }
 
@@ -75,10 +76,19 @@ public class ChatActivity extends AppCompatActivity {
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
-
+            // publish new message
             public void onClick(View v) {
-                publish(client, clientId);
+                publish(client, newTopic);
 
+            }
+        });
+
+        // remove long pressed message
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                messageAdapter.removeMessage(position);
+                return true;
             }
         });
 
@@ -91,7 +101,6 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
 
-                    Message subscriberMessage = new Message(myPayload, false);
                     Log.d(TAG, "subscription successful!");
                 }
 
@@ -105,27 +114,32 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void publish(MqttAndroidClient client, String clientId) {
+    private void publish(MqttAndroidClient client, String topic) {
         try {
-            String topic = "seamfix/test";
+
             byte[] encodedPayload = new byte[0];
             myPayload = payloadInput.getText().toString();
+
             Message publisherMessage = new Message(myPayload, true);
             messageAdapter.addMessage(publisherMessage);
+
+            Message subscriberMessage = new Message(myPayload, false);
+            messageAdapter.addMessage(subscriberMessage);
+
             if (myPayload.length() > 0) {
                 encodedPayload = myPayload.getBytes("UTF-8");
                 MqttMessage message = new MqttMessage(encodedPayload);
                 client.publish(topic, message);
-                Log.d(TAG, myPayload);
                 payloadInput.getText().clear();
+                Log.d(TAG, "Publish successful");
             }
 
-            Log.d(TAG, clientId);
-            Log.d(TAG, "Publish successful");
 
 
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }
     }
+
+
 }
