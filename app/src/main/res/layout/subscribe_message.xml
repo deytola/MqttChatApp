@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/message_body"
+        android:id="@+id/sub_message_body"
         android:background="@drawable/subscribe_message"
         android:paddingVertical="12dp"
         android:paddingHorizontal="16dp"
