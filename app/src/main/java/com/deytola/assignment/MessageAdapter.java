@@ -12,51 +12,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageAdapter extends BaseAdapter {
-    List<Message> messages = new ArrayList<>();
-    Context context;
+    List<Message> messages = new ArrayList<>(); //data source of the list adapter
+    Context context; //context
 
-    public MessageAdapter(Context context, List<Message> messages){
+    // public constructor
+    public MessageAdapter(Context context, List<Message> messages) {
         this.context = context;
         this.messages = messages;
     }
 
-    public void addMessage(Message message){
+    public void addMessage(Message message) {
         this.messages.add(message);
-        notifyDataSetChanged();  // notification is required to render
+        notifyDataSetChanged();  // notification is required to render updated chat
     }
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return messages.size();
+    } //returns total number of items in the list
+
+    @Override
+    public Object getItem(int i) {
+        return messages.get(i);  // returns list item at specified position
     }
 
     @Override
-    public Object getItem(int i){
-        return messages.get(i);
+    public long getItemId(int position) {
+        return position;
     }
 
+    // Create single ListView row/template i.e chat bubble
     @Override
-    public long getItemId(int i){
-        return i;
-    }
-
-    // Create single ListView row i.e chat bubble
-    @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup){
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
         MessageViewHolder holder = new MessageViewHolder();
-        LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        Message message = messages.get(i);
 
-        if(message.isUserPublisher()){ // message was created by user, so create a right side bubble
+        LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
+        Message message = messages.get(position);
+        //  inflate the layout for each list row
+        if (message.isUserPublisher()) { // message was created by user, so create a right side bubble
             convertView = messageInflater.inflate(R.layout.publish_message, null);
-            holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
+            holder.messageBody = (TextView) convertView.findViewById(R.id.pub_message_body);
             convertView.setTag(holder);
             holder.messageBody.setText(message.getText());
-        }else {
+        } else {
             convertView = messageInflater.inflate(R.layout.subscribe_message, null);
-            holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
+            holder.messageBody = (TextView) convertView.findViewById(R.id.sub_message_body);
             convertView.setTag(holder);
-
             holder.messageBody.setText(message.getText());
         }
         return convertView;
@@ -64,5 +66,10 @@ public class MessageAdapter extends BaseAdapter {
 
     private class MessageViewHolder {
         public TextView messageBody;
+    }
+
+    public void removeMessage(int position){
+        messages.remove(position);
+        notifyDataSetChanged();
     }
 }
