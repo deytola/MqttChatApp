@@ -5,7 +5,7 @@ android:
     - tools
     - platform-tools
     - android-21
-    - android-17
+    #- android-17
     - android-28
     - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
     # The BuildTools version used by the project
